@@ -1,0 +1,28 @@
+<h1 style="color:white" id="mat">-</h1>
+<script>
+  let l = "Drottninggatan 32 Stockholm";
+let radius = 1000; // search radius in meters
+let types = "Food";
+
+let url = `https://nominatim.openstreetmap.org/?addressdetails=1&q=${types}+near+${l}&format=json&limit=100`;
+document.getElementById("mat").innerHTML = "----"
+fetch(url)
+  .then(response => response.json())
+  .then(data => {
+    const restaurants = [];
+    data.forEach(result => {
+      const lat = result.lat;
+      const lon = result.lon;
+      const distance = ((lat - 59.333324) ** 2 + (lon - 18.064167) ** 2) ** 0.5 * 111000; // in meters
+      if (distance <= radius) {
+        const name = result.display_name;
+        const address = result.address.road;
+        restaurants.push({ name, address });
+      }
+    });
+
+    const selectedRestaurant = restaurants[Math.floor(Math.random() * restaurants.length)];
+    console.log(selectedRestaurant.name);
+  	document.getElementById("mat").innerHTML = selectedRestaurant.name
+  });
+</script>
